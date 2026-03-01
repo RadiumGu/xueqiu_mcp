@@ -506,5 +506,17 @@ def suggest_stock(keyword: str="SZ000002") -> dict:
 
 
 if __name__ == "__main__":
-    # This code only runs when the file is executed directly
-    mcp.run()
+    import argparse
+    parser = argparse.ArgumentParser(description="Xueqiu MCP Server")
+    parser.add_argument("--transport", default="stdio", choices=["stdio", "sse", "streamable-http"],
+                        help="Transport mode (default: stdio)")
+    parser.add_argument("--port", type=int, default=8766,
+                        help="HTTP port for sse/streamable-http transport (default: 8766)")
+    parser.add_argument("--host", default="127.0.0.1",
+                        help="HTTP host for sse/streamable-http transport (default: 127.0.0.1)")
+    args = parser.parse_args()
+
+    if args.transport == "stdio":
+        mcp.run(transport="stdio")
+    else:
+        mcp.run(transport=args.transport, host=args.host, port=args.port)
